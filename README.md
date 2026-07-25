@@ -20,7 +20,7 @@ Deploy a production-style three-tier web application on AWS.
 
 ## Progress
 
-### ✅ Day 1 – Networking
+### ✅ Day 2 – Networking
 - Created a custom VPC
 - Created public, application and database subnets across two Availability Zones
 - Attached an Internet Gateway
@@ -31,7 +31,7 @@ Deploy a production-style three-tier web application on AWS.
   <img src="docs/screenshots/three_tier_vpc_architecture.png" width="800">
 </p>
 
-### ✅ Day 2 – Security & Compute
+### ✅ Day 3 – Security & Compute
 - Created Security Groups for ALB, Application and Database tiers
 - Configured Security Group communication (ALB → App → Database)
 - Created an IAM Role with `AmazonSSMManagedInstanceCore`
