@@ -18,3 +18,13 @@ is crossed, not just after) and multiple thresholds in one resource.
 ap-south-1.
 **Why:** 2 AZs is the standard resilience/cost balance point — eliminates single
 point of failure without doubling subnet/NAT overhead for marginal extra gain.
+
+**DAY 2**
+
+**Decision:** Use a NAT Gateway instead of VPC Endpoints for outbound access.
+
+**Why:** The application needs general internet connectivity (for example, npm package downloads). VPC Endpoints only provide private connectivity to supported AWS services.
+
+**Decision:** Use a NAT Gateway instead of VPC Endpoints for outbound access.
+
+**Why:** The application needs general internet connectivity (for example, npm package downloads). VPC Endpoints only provide private connectivity to supported AWS services.
