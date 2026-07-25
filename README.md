@@ -15,4 +15,6 @@ Deploy a production-style three-tier web application on AWS.
 - Route Tables
 
 ## Architecture
-![VPC Architecture Diagram](docs/three_tier_vpc_architecture.png)
+<p align="center">
+  <img src="docs/architecture-diagram.png" width="800">
+</p>
