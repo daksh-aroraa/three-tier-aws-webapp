@@ -28,3 +28,50 @@ point of failure without doubling subnet/NAT overhead for marginal extra gain.
 **Decision:** Use a NAT Gateway instead of VPC Endpoints for outbound access.
 
 **Why:** The application needs general internet connectivity (for example, npm package downloads). VPC Endpoints only provide private connectivity to supported AWS services.
+
+# Day 3 Decisions
+
+## Used Session Manager instead of SSH
+
+**Decision:**
+Launch the EC2 instance without an SSH key pair and without opening port 22.
+
+**Reason:**
+Session Manager provides secure browser-based access without exposing SSH to the internet or managing key pairs.
+
+---
+
+## Private EC2 Instance
+
+**Decision:**
+Deploy the application server inside a private subnet.
+
+**Reason:**
+Application servers should not be directly accessible from the internet. Only the Application Load Balancer should accept public traffic.
+
+---
+
+## Security Group Creation Order
+
+**Decision:**
+Created Security Groups in the following order:
+1. db-sg
+2. app-sg
+3. alb-sg
+
+**Reason:**
+app-sg must reference alb-sg and db-sg must reference app-sg. Creating all groups first avoids circular dependency issues.
+
+---
+
+## Security Group Communication
+
+Internet
+↓
+alb-sg
+↓
+app-sg
+↓
+db-sg
+
+Each layer accepts traffic only from the previous layer.

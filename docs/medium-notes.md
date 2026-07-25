@@ -10,7 +10,7 @@
   not "use whatever the region gives you."
 
   ## Day 2
-  
+
 - CIDR notation finally clicked. A VPC CIDR (10.0.0.0/16) is just the address
   space, while each subnet (/24) carves out a smaller, non-overlapping portion
   of that space.
@@ -30,3 +30,35 @@
 - Keeping separate Route Tables for Public, App, and Database tiers makes the
   network easier to reason about and prevents accidentally giving internet
   access to resources that should remain private.
+
+  # Day 3 Notes
+
+Today I understood Security Groups much better.
+
+Initially I confused the inbound port with the sender's port.
+
+Later I realised an inbound rule has two parts:
+
+- Source → Who is sending the traffic?
+- Port → Which port on my resource are they trying to access?
+
+For example:
+
+Source = alb-sg
+Port = 3000
+
+means:
+
+Allow the Application Load Balancer to connect to port 3000 on my EC2 instance.
+
+The biggest learning today was Session Manager.
+
+I successfully connected to a private EC2 instance without:
+- SSH
+- Public IP
+- Port 22
+- Key Pair
+
+The entire connection happened through AWS Systems Manager using the IAM Role attached to the instance.
+
+Seeing the shell open proved that IAM, SSM Agent, NAT Gateway and networking were all configured correctly.
