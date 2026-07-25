@@ -16,5 +16,5 @@ Deploy a production-style three-tier web application on AWS.
 
 ## Architecture
 <p align="center">
-  <img src="docs/architecture-diagram.png" width="800">
+  <img src="docs\three_tier_vpc_architecture.png" width="800">
 </p>
