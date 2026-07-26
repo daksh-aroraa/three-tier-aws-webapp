@@ -75,3 +75,21 @@ app-sg
 db-sg
 
 Each layer accepts traffic only from the previous layer.
+
+# Day 4 — Application Tier
+
+## Decision: Used nvm to install Node.js (v24.18.0) instead of the operating system package manager.
+
+**Why:** Installing Node.js through nvm allowed me to use a specific LTS version instead of depending on the version available in Amazon Linux's repositories. This makes the application environment more predictable and easier to reproduce.
+
+---
+
+## Decision: Managed the Express application with systemd instead of running it manually or using PM2.
+
+**Why:** systemd is the native service manager in Linux and already manages essential services such as the Amazon SSM Agent. Running the application as a systemd service provides automatic startup after reboot, automatic restart on failure, and a consistent way to manage background processes.
+
+---
+
+## Decision: Added a dedicated `/health` endpoint.
+
+**Why:** The `/health` endpoint returns the application's health status independently of the main application routes. It will be used by the Application Load Balancer (ALB) for health checks and later by monitoring tools such as CloudWatch.

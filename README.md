@@ -42,3 +42,21 @@ Deploy a production-style three-tier web application on AWS.
 <p align="center">
   <img src="docs/screenshots/session-manager-shell.png" width="800">
 </p>
+
+## Day 4 – Application Tier
+
+### Completed
+- Built a simple Express.js application.
+- Added a `/health` endpoint for future ALB health checks.
+- Deployed the application on a private EC2 instance.
+- Installed Node.js using `nvm`.
+- Configured the application as a `systemd` service.
+- Enabled automatic startup on instance boot.
+- Verified the service survives terminal disconnects and instance reboots.
+
+### Key Learnings
+- Difference between foreground processes and Linux services.
+- How `systemd` manages long-running applications.
+- Why `ExecStart` requires the absolute Node.js path when using `nvm`.
+- Difference between `systemctl start` and `systemctl enable`.
+- Why production applications should run as services instead of terminal processes.

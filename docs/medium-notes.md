@@ -62,3 +62,79 @@ I successfully connected to a private EC2 instance without:
 The entire connection happened through AWS Systems Manager using the IAM Role attached to the instance.
 
 Seeing the shell open proved that IAM, SSM Agent, NAT Gateway and networking were all configured correctly.
+
+# Day 4 – Deploying the Application Tier
+
+Today, I deployed my Express.js application on a private EC2 instance and configured it to run as a Linux service using **systemd**. While the deployment itself was straightforward, I came across an interesting real-world issue that taught me an important lesson about Linux services.
+
+## The "It Works in My Terminal" Problem
+
+Initially, I started my application using:
+
+```bash
+node server.js
+```
+
+Everything worked perfectly. I could even verify the application using:
+
+```bash
+curl http://localhost:3000/
+```
+
+However, after creating a `systemd` service, the application refused to start even though the same command worked from the terminal.
+
+At first, it looked like something was wrong with my Express application, but the problem wasn't in the code at all.
+
+## Understanding the Root Cause
+
+I had installed Node.js using **nvm (Node Version Manager)**.
+
+When I open a terminal, my shell loads the nvm configuration and updates the `PATH` environment variable. That's why simply typing:
+
+```bash
+node
+```
+
+works.
+
+But `systemd` does **not** inherit my interactive shell environment. It starts services with a much cleaner environment, so it had no idea where the `node` executable was located.
+
+To verify the actual location of Node.js, I used:
+
+```bash
+which node
+```
+
+which returned something like:
+
+```text
+/home/ssm-user/.nvm/versions/node/v24.18.0/bin/node
+```
+
+Instead of writing:
+
+```ini
+ExecStart=node server.js
+```
+
+I updated my service file to use the absolute path:
+
+```ini
+ExecStart=/home/ssm-user/.nvm/versions/node/v24.18.0/bin/node /home/ssm-user/three-tier-aws-webapp/app/server.js
+```
+
+After reloading systemd and restarting the service, everything worked as expected.
+
+## What I Learned
+
+This was a great reminder that **"works in my terminal" doesn't always mean "works as a service."**
+
+Interactive shells and Linux services don't always share the same environment variables or `PATH`. Whenever a service cannot find an executable, checking its absolute path using `which` is often the quickest way to diagnose the problem.
+
+## Key Takeaways
+
+- Running `node server.js` starts a foreground process tied to the current terminal.
+- `systemd` manages applications as background services that continue running after logout or reboot.
+- `systemd` does not automatically inherit the shell environment created by `nvm`.
+- Using the absolute executable path in `ExecStart` makes the service reliable.
+- Adding a dedicated `/health` endpoint prepares the application for future ALB health checks and monitoring.
