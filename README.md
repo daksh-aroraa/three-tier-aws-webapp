@@ -72,9 +72,6 @@ Deploy a production-style three-tier web application on AWS.
 - Successfully served the Express application through the ALB DNS name.
 - Kept the application server private while exposing only the ALB to the Internet.
 
-<p align="center">
-  <img src="docs/screenshots/alb-homepage.png" width="800">
-</p>
 
 ### Key Learnings
 - Difference between an ALB listener port and the backend application port.
