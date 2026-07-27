@@ -72,6 +72,9 @@ Deploy a production-style three-tier web application on AWS.
 - Successfully served the Express application through the ALB DNS name.
 - Kept the application server private while exposing only the ALB to the Internet.
 
+<p align="center">
+  <img src="docs/screenshots/Load_Balancers.png" width="800">
+</p>
 
 ### Key Learnings
 - Difference between an ALB listener port and the backend application port.
@@ -79,3 +82,7 @@ Deploy a production-style three-tier web application on AWS.
 - Why the ALB must reside in public subnets while application servers remain in private subnets.
 - Purpose of Target Groups and health checks.
 - Why browsers access the ALB on HTTP (80) while the Express application listens on port 3000.
+
+<p align="center">
+  <img src="docs/screenshots/Working_app_alb.png" width="800">
+</p>
