@@ -138,3 +138,6 @@ Interactive shells and Linux services don't always share the same environment va
 - `systemd` does not automatically inherit the shell environment created by `nvm`.
 - Using the absolute executable path in `ExecStart` makes the service reliable.
 - Adding a dedicated `/health` endpoint prepares the application for future ALB health checks and monitoring.
+
+# Day 5
+the Chrome HTTPS-first gotcha itself — "spent 10 minutes debugging AWS config that was already correct, because Chrome silently tried HTTPS first"

@@ -60,3 +60,25 @@ Deploy a production-style three-tier web application on AWS.
 - Why `ExecStart` requires the absolute Node.js path when using `nvm`.
 - Difference between `systemctl start` and `systemctl enable`.
 - Why production applications should run as services instead of terminal processes.
+
+### ✅ Day 5 – Load Balancing
+
+### Completed
+- Created an Application Load Balancer (ALB).
+- Created a Target Group for the application tier.
+- Configured the ALB listener on HTTP (port 80).
+- Registered the private EC2 instance as a target on port 3000.
+- Configured `/health` as the Target Group health check endpoint.
+- Successfully served the Express application through the ALB DNS name.
+- Kept the application server private while exposing only the ALB to the Internet.
+
+<p align="center">
+  <img src="docs/screenshots/alb-homepage.png" width="800">
+</p>
+
+### Key Learnings
+- Difference between an ALB listener port and the backend application port.
+- How an ALB creates a new connection to backend targets instead of forwarding the client's TCP connection directly.
+- Why the ALB must reside in public subnets while application servers remain in private subnets.
+- Purpose of Target Groups and health checks.
+- Why browsers access the ALB on HTTP (80) while the Express application listens on port 3000.

@@ -93,3 +93,12 @@ Each layer accepts traffic only from the previous layer.
 ## Decision: Added a dedicated `/health` endpoint.
 
 **Why:** The `/health` endpoint returns the application's health status independently of the main application routes. It will be used by the Application Load Balancer (ALB) for health checks and later by monitoring tools such as CloudWatch.
+
+
+ ## Day 5 — Load Balancer
+
+**Decision:** ALB configured with HTTP:80 listener only, no HTTPS.
+**Why:** Scoped for this project's timeline; HTTPS would require an ACM
+certificate + a custom domain (ACM won't issue certs for *.elb.amazonaws.com).
+Known gap — a real production deployment would terminate TLS at the ALB and
+redirect all HTTP traffic to HTTPS.
