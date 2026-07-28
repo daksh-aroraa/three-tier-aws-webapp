@@ -141,3 +141,15 @@ Interactive shells and Linux services don't always share the same environment va
 
 # Day 5
 the Chrome HTTPS-first gotcha itself — "spent 10 minutes debugging AWS config that was already correct, because Chrome silently tried HTTPS first"
+
+
+ # Day 6
+
+- Difference between DB Subnet Group and normal subnet
+- Why database should never be public
+- Secrets Manager vs hardcoded passwords
+- IAM least privilege
+- Cost mistake (200GB + Multi-AZ)
+- psql version mismatch warning
+- Angle brackets (<>) mistake
+- First successful database connection

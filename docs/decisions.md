@@ -102,3 +102,34 @@ Each layer accepts traffic only from the previous layer.
 certificate + a custom domain (ACM won't issue certs for *.elb.amazonaws.com).
 Known gap — a real production deployment would terminate TLS at the ALB and
 redirect all HTTP traffic to HTTPS.
+
+## Day 5 (addendum) — HA gap, deliberately deferred
+
+**Decision:** Continuing with a single EC2 instance in private-app-subnet-1a
+rather than immediately adding a second instance or an Auto Scaling Group.
+**Why:** Networking layer (2 AZs, 2 app subnets) was built HA-ready from the
+start, but compute HA was deprioritized given timeline to compelete the project.
+
+**Status:** Known gap, not an oversight. Revisit with a 2nd instance or ASG
+if time allows before wrap-up; otherwise documented as a clear "next step"
+in the README rather than left unexplained.
+
+## Day 6 — RDS PostgreSQL
+
+**Decision:** Used AWS Secrets Manager for the master password instead of a
+self-set password.
+**Why:** Password never appears in shell history, notes, or committed files;
+EC2 retrieves it at runtime via IAM role permissions, scoped to GetSecretValue
+on this one secret ARN only.
+
+**Decision:** RDS deployed Single-AZ, Public access disabled, in isolated
+DB subnets with no internet route in either direction.
+**Why:** No legitimate reason for the DB tier to be reachable from, or reach
+out to, the internet — smallest possible attack surface for the most
+sensitive tier.
+
+**Near-miss:** First RDS attempt had 200GB gp3 storage + Multi-AZ enabled by
+mistake — inflated estimate to $90.36/month. Caught via the console's own
+cost estimate before creation completed; deleted (no data existed) and
+recreated correctly at ~$21.60/month. Lesson: always read the estimate panel,
+never assume a template's defaults.

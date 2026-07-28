@@ -86,3 +86,27 @@ Deploy a production-style three-tier web application on AWS.
 <p align="center">
   <img src="docs/screenshots/Working_app_alb.png" width="800">
 </p>
+
+# Day 6
+
+## Architecture
+
+The project currently implements a production-inspired three-tier architecture on AWS. The networking spans two Availability Zones, while the application and database currently run in a cost-optimized single-instance configuration. The unused subnets are intentionally retained to support future migration to Auto Scaling and Multi-AZ deployments.
+
+<p align="center">
+  <img src="docs/screenshots/three_tier_full_architecture_v2.png" width="800">
+</p>
+
+### Current Request Flow
+
+1. User sends an HTTP request.
+2. Application Load Balancer receives the request.
+3. ALB forwards it to the private EC2 instance.
+4. The Express application queries Amazon RDS PostgreSQL over port 5432.
+5. The database returns the result to the application.
+6. The application sends the response back through the ALB to the user.
+
+<p align="center">
+  <img src="docs/screenshots/working_db_shell.png" width="800">
+</p>
+
