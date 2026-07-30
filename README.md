@@ -18,7 +18,7 @@ Deploy a production-style three-tier web application on AWS.
 
 
 
-## Progress
+## Implementation Journey
 
 ### ✅ Day 2 – Networking
 - Created a custom VPC
@@ -110,3 +110,67 @@ The project currently implements a production-inspired three-tier architecture o
   <img src="docs/screenshots/working_db_shell.png" width="800">
 </p>
 
+
+## ✅ Day 7 – Monitoring & Observability
+
+### Completed
+
+- Installed the Amazon CloudWatch Agent on the private EC2 instance.
+- Configured the agent to collect host-level metrics including memory, disk usage, and swap usage.
+- Redirected the Express application's stdout and stderr to a dedicated log file using `systemd`.
+- Configured the CloudWatch Agent to continuously ship application logs to Amazon CloudWatch Logs.
+- Verified successful log ingestion using a dedicated CloudWatch Log Group and per-instance Log Stream.
+- Created a CloudWatch Dashboard to visualize infrastructure and database metrics from a single view.
+
+<p align="center">
+  <img src="docs/screenshots/cloudwatch_dashboard.png" width="800">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/cloudwatch_logs.png" width="800">
+</p>
+
+### Key Learnings
+
+- Difference between CloudWatch Logs and CloudWatch Metrics.
+- Why EC2 requires the CloudWatch Agent to expose memory and disk metrics.
+- Difference between default EC2 monitoring and host-level monitoring.
+- How `systemd` logging integrates with CloudWatch Agent.
+- Why RDS exposes database metrics without installing an agent.
+- Basic observability pipeline for production applications.
+
+### Monitoring Pipeline
+
+```text
+Express Application
+        │
+ console.log()
+        │
+        ▼
+systemd
+        │
+        ▼
+/var/log/three-tier-app/app.log
+        │
+        ▼
+CloudWatch Agent
+   ┌──────────────┴──────────────┐
+   ▼                             ▼
+CloudWatch Logs          CloudWatch Metrics
+(Application Logs)   (Memory, Disk, Swap)
+```
+
+
+## Future Improvements
+
+The current implementation intentionally uses a single EC2 instance and single-AZ database deployment to remain within AWS student credit limits.
+
+Future production enhancements include:
+
+- Auto Scaling Group across multiple Availability Zones
+- Multi-instance application deployment
+- Centralized CloudWatch Agent configuration using AWS Systems Manager Parameter Store
+- CloudWatch Alarms with Amazon SNS notifications
+- HTTPS using AWS Certificate Manager
+- Infrastructure as Code using Terraform
+- CI/CD pipeline with GitHub Actions

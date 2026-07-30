@@ -133,3 +133,67 @@ mistake — inflated estimate to $90.36/month. Caught via the console's own
 cost estimate before creation completed; deleted (no data existed) and
 recreated correctly at ~$21.60/month. Lesson: always read the estimate panel,
 never assume a template's defaults.
+
+# Day 7 – Monitoring & Observability Decisions
+
+## Decision 1: Use the CloudWatch Agent
+
+### Decision
+Installed the Amazon CloudWatch Agent on the EC2 instance.
+
+### Why
+The default EC2 monitoring only provides infrastructure metrics such as CPU utilization, network traffic, and disk I/O. It does not expose operating system metrics like memory, disk usage, or swap usage.
+
+The CloudWatch Agent bridges this gap by collecting host-level metrics directly from the operating system and publishing them to CloudWatch.
+
+---
+
+## Decision 2: Redirect Application Logs to a Dedicated File
+
+### Decision
+Configured the Express application's systemd service to redirect stdout and stderr to:
+
+/var/log/three-tier-app/app.log
+
+### Why
+Instead of relying only on the system journal, using a dedicated log file provides a simpler and more explicit ingestion path for the CloudWatch Agent. It also makes local troubleshooting easier since the application logs are stored separately.
+
+---
+
+## Decision 3: Store Application Logs in CloudWatch Logs
+
+### Decision
+Configured the CloudWatch Agent to continuously monitor:
+
+/var/log/three-tier-app/app.log
+
+and upload new log entries to CloudWatch Logs.
+
+### Why
+Centralized logging makes it possible to monitor application behavior without logging into the EC2 instance. It also provides a foundation for future alerting and log analysis.
+
+---
+
+## Decision 4: Build a Monitoring Dashboard
+
+### Decision
+Created a CloudWatch Dashboard to visualize infrastructure metrics.
+
+### Why
+A dashboard provides a single operational view of the application and infrastructure instead of manually checking multiple CloudWatch pages.
+
+---
+
+## Decision 5: Local Agent Configuration
+
+### Decision
+Used the locally generated CloudWatch Agent configuration.
+
+### Why
+The configuration was initially intended to be stored in AWS Systems Manager Parameter Store.
+
+However, the EC2 IAM role lacked the required `ssm:PutParameter` permission, resulting in an `AccessDeniedException`.
+
+Rather than expanding IAM permissions solely for this learning project, the agent was configured using the local configuration file.
+
+In a production deployment or Auto Scaling environment, storing the configuration in Parameter Store would simplify reuse across multiple EC2 instances.

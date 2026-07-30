@@ -153,3 +153,145 @@ the Chrome HTTPS-first gotcha itself — "spent 10 minutes debugging AWS config 
 - psql version mismatch warning
 - Angle brackets (<>) mistake
 - First successful database connection
+
+# Day 7 – Monitoring & Observability Notes
+
+Today was less about installing another AWS service and more about understanding how monitoring actually works.
+
+Before today, the application was simply running on EC2. If something went wrong, I would have to log into the server using Session Manager and inspect the application manually.
+
+Adding CloudWatch changed that completely.
+
+---
+
+## CloudWatch Logs vs CloudWatch Metrics
+
+One realization today was that CloudWatch Logs and CloudWatch Metrics solve two different problems.
+
+Logs answer:
+
+"What happened?"
+
+Examples:
+
+- Application started
+- Request received
+- Database connection failed
+
+Metrics answer:
+
+"How healthy is the system?"
+
+Examples:
+
+- CPU Utilization
+- Memory Usage
+- Disk Usage
+- Swap Usage
+
+Both are important because metrics can indicate that something is wrong, while logs usually explain why.
+
+---
+
+## Default EC2 Metrics are Limited
+
+Initially I assumed CloudWatch already monitored everything.
+
+It doesn't.
+
+EC2 automatically publishes CPU, network, and some infrastructure metrics.
+
+Memory and filesystem information are inside the operating system, so AWS cannot observe them directly.
+
+The CloudWatch Agent collects these host-level metrics and publishes them to CloudWatch.
+
+---
+
+## Why EC2 Needs an Agent but RDS Doesn't
+
+An interesting observation was the difference between EC2 and RDS.
+
+For EC2, I manage the operating system.
+
+AWS cannot see the guest OS memory or filesystem.
+
+For RDS, AWS manages the operating system.
+
+Because AWS owns the underlying host, it can publish database metrics such as CPU utilization, storage, and database connections without installing an agent.
+
+This was one of the clearest examples of the difference between self-managed and managed services.
+
+---
+
+## Linux Understanding
+
+Today also helped me understand Linux services better.
+
+The Express application writes logs using:
+
+console.log()
+
+systemd redirects stdout and stderr to:
+
+/var/log/three-tier-app/app.log
+
+The CloudWatch Agent continuously watches this file and uploads new log entries to CloudWatch Logs.
+
+The complete pipeline became:
+
+Express
+
+↓
+
+systemd
+
+↓
+
+app.log
+
+↓
+
+CloudWatch Agent
+
+↓
+
+CloudWatch Logs
+
+---
+
+## Real-World IAM Issue
+
+While configuring the agent, I attempted to store the configuration in AWS Systems Manager Parameter Store.
+
+AWS denied the request because the EC2 IAM role didn't have permission to perform:
+
+ssm:PutParameter
+
+Instead of treating it as a CloudWatch issue, I learned to distinguish between:
+
+Authentication
+
+"Who am I?"
+
+Authorization
+
+"What am I allowed to do?"
+
+The CloudWatch Agent was working correctly.
+
+The IAM role simply wasn't authorized to create a Parameter Store entry.
+
+---
+
+## Key Takeaway
+
+Monitoring is not just collecting numbers.
+
+Good observability combines:
+
+- Infrastructure metrics
+- Application logs
+- Dashboards
+- Centralized visibility
+
+Today transformed the project from "an application that runs" into "an application that can be observed."
