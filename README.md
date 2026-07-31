@@ -39,6 +39,12 @@ Deploy a production-style three-tier web application on AWS.
 - Configured an AWS Budget with actual-cost and forecasted-cost alert thresholds
   before provisioning any resources
 
+## Cost Management
+
+- Configured AWS Budgets with 50% actual-cost and 80% forecasted-cost alert thresholds.
+- Optimized the deployment for cost by using a Single-AZ RDS instance and a single NAT Gateway while staying within the available AWS student credits.
+- Documented production-scale alternatives in the Future Improvements section.
+
 ### ✅ Day 2 – Networking
 - Created a custom VPC
 - Created public, application and database subnets across two Availability Zones
