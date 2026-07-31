@@ -295,3 +295,6 @@ Good observability combines:
 - Centralized visibility
 
 Today transformed the project from "an application that runs" into "an application that can be observed."
+
+
+started broad as admin, hardened at the end once I knew exactly what the account needed

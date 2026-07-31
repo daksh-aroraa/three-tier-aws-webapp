@@ -17,6 +17,18 @@ Deploy a production-style three-tier web application on AWS.
 ## Architecture
 
 
+## Features
+
+- Custom VPC spanning two Availability Zones
+- Public and private subnet architecture
+- Private EC2 application server
+- Application Load Balancer
+- Amazon RDS PostgreSQL
+- AWS Systems Manager Session Manager (SSH-less administration)
+- AWS Secrets Manager
+- Amazon CloudWatch Logs & Metrics
+- CloudWatch Dashboard
+- IAM least-privilege hardening
 
 ## Implementation Journey
 
@@ -43,7 +55,7 @@ Deploy a production-style three-tier web application on AWS.
   <img src="docs/screenshots/session-manager-shell.png" width="800">
 </p>
 
-## Day 4 – Application Tier
+### ✅ Day 4 – Application Tier
 
 ### Completed
 - Built a simple Express.js application.
@@ -87,7 +99,7 @@ Deploy a production-style three-tier web application on AWS.
   <img src="docs/screenshots/Working_app_alb.png" width="800">
 </p>
 
-# Day 6
+### ✅ Day 6 – Database Tier
 
 ## Architecture
 
@@ -138,6 +150,8 @@ The project currently implements a production-inspired three-tier architecture o
 - How `systemd` logging integrates with CloudWatch Agent.
 - Why RDS exposes database metrics without installing an agent.
 - Basic observability pipeline for production applications.
+- Importance of following the principle of least privilege for IAM users.
+- Difference between broad administrative access and service-specific IAM permissions.
 
 ### Monitoring Pipeline
 
@@ -174,3 +188,19 @@ Future production enhancements include:
 - HTTPS using AWS Certificate Manager
 - Infrastructure as Code using Terraform
 - CI/CD pipeline with GitHub Actions
+
+### IAM Hardening
+
+After completing the monitoring setup, the IAM permissions for the `daksh-admin` user were reviewed and hardened.
+
+- Removed the broad `AdministratorAccess` policy.
+- Replaced it with service-specific AWS managed policies required for this project.
+- Verified continued access to EC2, VPC, RDS, CloudWatch, Secrets Manager, Session Manager, and the Application Load Balancer.
+
+This reduced unnecessary administrative privileges while maintaining full functionality for the deployed infrastructure.
+
+### Note
+
+This implementation focuses on establishing the monitoring foundation for the application by collecting infrastructure metrics and centralizing application logs.
+
+Advanced observability features such as CloudWatch Alarms, SNS notifications, custom dashboards, log insights, and automated alerting are intentionally planned for a future dedicated monitoring and observability project.

@@ -197,3 +197,21 @@ However, the EC2 IAM role lacked the required `ssm:PutParameter` permission, res
 Rather than expanding IAM permissions solely for this learning project, the agent was configured using the local configuration file.
 
 In a production deployment or Auto Scaling environment, storing the configuration in Parameter Store would simplify reuse across multiple EC2 instances.
+
+## IAM Hardening Pass
+
+**Decision:** Replaced AdministratorAccess on daksh-admin with 10 scoped
+AWS-managed policies (EC2, RDS, SSM, VPC, Billing, CloudWatch, ELB,
+IAMReadOnlyAccess, IAMUserChangePassword, SecretsManagerReadWrite) covering
+every service actually used in this project.
+**Why:** Least-privilege over broad admin access. Used AWS-managed
+job-function/service policies rather than hand-written custom actions, given
+project timeline — a reasonable trade-off for a single-actor account, though
+a fully rigorous production setup would write custom scoped policies per
+action rather than full-service managed policies.
+**Deliberately excluded:** Full IAM write access (only IAMReadOnlyAccess +
+self password-change) — IAM management is the highest-risk permission to
+leave broad, since it can be used to grant any other permission, including
+re-creating admin access.
+**Verified:** Session Manager, EC2/VPC/RDS/CloudWatch/Secrets Manager console
+access, and the live app via ALB all confirmed working after the swap.
