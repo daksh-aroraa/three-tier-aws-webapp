@@ -189,7 +189,7 @@ Future production enhancements include:
 - Infrastructure as Code using Terraform
 - CI/CD pipeline with GitHub Actions
 
-### IAM Hardening
+### ✅ Day 8 – IAM Hardening
 
 After completing the monitoring setup, the IAM permissions for the `daksh-admin` user were reviewed and hardened.
 
