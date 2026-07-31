@@ -32,6 +32,13 @@ Deploy a production-style three-tier web application on AWS.
 
 ## Implementation Journey
 
+### ✅ Day 1 – Account Foundations
+- Locked down the AWS root user with MFA; created a dedicated IAM admin user for daily work
+- Discovered that admin access alone doesn't grant billing visibility — enabled 
+  "IAM User and Role Access to Billing Information" at the account level
+- Configured an AWS Budget with actual-cost and forecasted-cost alert thresholds
+  before provisioning any resources
+
 ### ✅ Day 2 – Networking
 - Created a custom VPC
 - Created public, application and database subnets across two Availability Zones
