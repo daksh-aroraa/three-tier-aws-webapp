@@ -20,6 +20,9 @@ Deploy a production-style three-tier web application on AWS.
   <img src="docs/screenshots/three_tier_vpc_architecture.png" width="800">
 </p>
 
+> **Note**
+> This project implements a cost-optimized deployment due to AWS student credit limits. While the network spans two Availability Zones, only one EC2 instance and one Single-AZ Amazon RDS instance are currently deployed. The remaining subnets are intentionally reserved for future Auto Scaling and Multi-AZ expansion.
+
 ## Features
 
 - Custom VPC spanning two Availability Zones
