@@ -215,3 +215,54 @@ leave broad, since it can be used to grant any other permission, including
 re-creating admin access.
 **Verified:** Session Manager, EC2/VPC/RDS/CloudWatch/Secrets Manager console
 access, and the live app via ALB all confirmed working after the swap.
+
+
+## Monitoring & Alerting Upgrade
+
+**Decision:** Built two demo CloudWatch Alarms (EC2 high CPU via stress-ng,
+ALB target unhealthy via stopping the service) wired to an SNS email topic.
+**Why:** Demonstrates the full monitoring→alarm→notification loop on the
+two tiers still running (RDS was torn down to preserve credits).
+
+**Learning:** CloudWatch alarm evaluation lags behind the actual underlying
+condition — ALB target health metrics in particular took several minutes
+longer to register a state change than EC2 CPU metrics did. First test
+attempt restarted the service before the alarm had evaluated, resulting in
+a false "still OK" read even though the target had genuinely gone unhealthy
+(confirmed via the Target Group's own health status and the alarm's graphed
+metric line). Second attempt with a longer deliberate wait window confirmed
+the alarm correctly fires and notifies via SNS.
+
+
+
+
+## Decision  — Step Scaling with Auto Scaling Group
+
+**Status:** Implemented
+
+### Decision
+
+Adopted an Auto Scaling Group with **Min 1 / Desired 1 / Max 2** using Step Scaling instead of maintaining two permanently running instances.
+
+### Why
+
+A permanent two-instance deployment would provide continuous multi-AZ redundancy but would also double baseline compute cost. For this project, I prioritized self-healing and on-demand elasticity over always-on redundancy.
+
+### Result
+
+- Automatic replacement of unhealthy instances
+- Temporary second instance during high CPU load
+- Automatic scale-in after traffic decreases
+- Lower idle infrastructure cost
+
+### Verification
+
+- High CPU alarm triggered scale-out (1 → 2 instances).
+- New instance passed ALB health checks.
+- Low CPU alarm triggered scale-in (2 → 1 instance).
+
+### Lessons Learned
+
+- New ASG instances require a NAT Gateway during user-data execution for package installation and GitHub cloning.
+- Auto Scaling alarms should use the **AutoScalingGroupName** dimension instead of a single EC2 instance.
+- Launch Templates prevent configuration drift by preserving IAM role, security group, and bootstrapping configuration.

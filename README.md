@@ -223,3 +223,31 @@ This reduced unnecessary administrative privileges while maintaining full functi
 This implementation focuses on establishing the monitoring foundation for the application by collecting infrastructure metrics and centralizing application logs.
 
 Advanced observability features such as CloudWatch Alarms, SNS notifications, custom dashboards, log insights, and automated alerting are intentionally planned for a future dedicated monitoring and observability project.
+
+
+## Auto Scaling & Step Scaling
+
+The application was upgraded from a manually managed EC2 instance to an Auto Scaling architecture to provide **self-healing** and **elastic scaling** while keeping infrastructure costs low.
+
+### Architecture
+
+- Launch Template with automated user-data deployment
+- Auto Scaling Group across two private app subnets
+- Min: 1 | Desired: 1 | Max: 2
+- Application Load Balancer + Target Group
+- CloudWatch Step Scaling (High & Low CPU alarms)
+
+### Scaling Policy
+
+| Alarm | Condition | Action |
+|--------|-----------|--------|
+| High CPU | CPU > 70% | Launch 1 additional EC2 instance |
+| Low CPU | CPU < 5% | Terminate 1 EC2 instance |
+
+### What this architecture provides
+
+- **Self-healing:** If the running instance fails, the ASG automatically launches a replacement.
+- **Elastic capacity:** A second instance is launched only during high CPU load and removed when demand drops.
+- **Cost optimization:** Only one instance runs during normal operation.
+
+> **Trade-off:** This is **not** permanent active-active redundancy. With Desired Capacity = 1, only one instance runs continuously; the second instance is created on demand.
